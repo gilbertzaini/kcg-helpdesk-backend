@@ -72,13 +72,42 @@ app.post("/tickets", async (req, res) => {
 
 app.patch("/tickets/:id", async (req, res) => {
   try {
-    const response = await Tickets.update(req.body, {
+    const { assigned_by, status } = req.body;
+
+    const assigner = await Employees.findByPk(assigned_by);
+
+    if (
+      (assigner.role === "Assigner" && status === "pending") ||
+      (assigner.role === "QC" && status === "done")
+    ) {
+      const response = await Tickets.update(req.body, {
+        where: {
+          id: req.params.id,
+        },
+      });
+
+      res.status(200).json({ msg: "Ticket Updated", Tickets: response });
+      console.log(response);
+    } else {
+      res
+        .status(400)
+        .json({
+          msg: `${assigner.name}(${assigned_by}) doesn't have the authority`,
+        });
+    }
+  } catch (e) {
+    console.log(e.message);
+  }
+});
+
+app.delete("/tickets/:id", async (req, res) => {
+  try {
+    await Tickets.destroy({
       where: {
         id: req.params.id,
       },
     });
-
-    res.status(204).json({ msg: "Ticket Updated", Tickets: response });
+    res.status(200).json({ msg: "Ticket Deleted" });
     console.log(response);
   } catch (e) {
     console.log(e.message);
