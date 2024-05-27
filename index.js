@@ -33,7 +33,6 @@ app.get("/employees", async (req, res) => {
     res.status(200).json(response);
     console.log(response);
   } catch (e) {
-    res.status(400).json({ msg: `No Data: ${e.message}` });
     console.log(e.message);
   }
 });
@@ -45,7 +44,6 @@ app.post("/employees", async (req, res) => {
     res.status(201).json({ msg: "Employee Created", Employees: newEmp });
     console.log(response);
   } catch (e) {
-    res.status(400).json({ msg: `Failed to create employee: ${e.message}` });
     console.log(e.message);
   }
 });
@@ -57,7 +55,6 @@ app.get("/tickets", async (req, res) => {
     res.status(200).json(response);
     console.log(response);
   } catch (e) {
-    res.status(400).json({ msg: `No Data: ${e.message}` });
     console.log(e.message);
   }
 });
@@ -69,7 +66,6 @@ app.post("/tickets", async (req, res) => {
     res.status(201).json({ msg: "Ticket Created", Tickets: newTicket });
     console.log(response);
   } catch (e) {
-    res.status(400).json({ msg: `Failed to create ticket: ${e.message}` });
     console.log(e.message);
   }
 });
@@ -93,12 +89,13 @@ app.patch("/tickets/:id", async (req, res) => {
       res.status(200).json({ msg: "Ticket Updated", Tickets: response });
       console.log(response);
     } else {
-      res.status(400).json({
-        msg: `${assigner.name}(${assigned_by}) doesn't have the authority`,
-      });
+      res
+        .status(400)
+        .json({
+          msg: `${assigner.name}(${assigned_by}) doesn't have the authority`,
+        });
     }
   } catch (e) {
-    res.status(400).json({ msg: `Failed to update ticket: ${e.message}` });
     console.log(e.message);
   }
 });
@@ -113,7 +110,6 @@ app.delete("/tickets/:id", async (req, res) => {
     res.status(200).json({ msg: "Ticket Deleted" });
     console.log(response);
   } catch (e) {
-    res.status(400).json({ msg: `Failed to delete ticket: ${e.message}` });
     console.log(e.message);
   }
 });
