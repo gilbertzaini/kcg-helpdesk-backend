@@ -41,7 +41,7 @@ CREATE TABLE `Employees` (
 --
 
 INSERT INTO `Employees` (`employee_id`, `name`, `division`, `role`, `createdAt`, `updatedAt`) VALUES
-('KCG-00001', 'Darryl', 'IT', 'Assigner', '2024-05-27 05:13:49', '2024-05-27 05:13:49'),
+('KCG-0001', 'Darryl', 'IT', 'Assigner', '2024-05-27 05:13:49', '2024-05-27 05:13:49'),
 ('KCG-0002', 'Aidan', 'IT', 'QC', '2024-05-27 03:29:27', '2024-05-27 03:29:27'),
 ('KCG-0003', 'Akbar', 'IT', '', '2024-05-27 03:30:21', '2024-05-27 03:30:21'),
 ('KCG-0004', 'Gilbert', 'IT', '', '2024-05-27 03:30:53', '2024-05-27 03:30:53');
