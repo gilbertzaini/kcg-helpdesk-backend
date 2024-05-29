@@ -178,7 +178,6 @@ app.post(
     try {
       const reqUser = await Employees.findByPk(req.params.request_id);
       req.body.assigned_by = reqUser.employee_id;
-      req.body.divisi = reqUser.division;
 
       if (req.file) {
         req.body.file_path = `uploads/${req.file.filename}`;
