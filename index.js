@@ -227,7 +227,7 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
       else req.body.status = "QC";
       const response = await Tickets.update(req.body, {
         where: {
-          id: req.params.id,
+          id: req.params.ticket_id,
         },
       });
 
