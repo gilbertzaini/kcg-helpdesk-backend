@@ -27,15 +27,12 @@ module.exports = {
       },
       deadline: {
         type: Sequelize.DATE,
-        allowNull: false,
       },
       assigned_by: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       assigned_to: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       status: {
         type: Sequelize.STRING,
