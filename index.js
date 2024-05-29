@@ -96,6 +96,20 @@ app.get("/tickets", async (req, res) => {
   }
 });
 
+app.get("/tickets/:id", async (req, res) => {
+  try {
+    const response = await Tickets.findByPk(req.params.id);
+
+    console.log(response);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.log(e.message);
+    return res.status(500).send(e.message);
+  }
+});
+
+
+
 app.post("/tickets", uploadFile.single("file_path"), async (req, res) => {
   try {
     if (req.file) {
