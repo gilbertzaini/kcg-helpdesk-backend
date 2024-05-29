@@ -35,14 +35,15 @@ const imageFilter = (req, file, cb) => {
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, __basedir + "uploads/");
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-bezkoder-${file.originalname}`);
   },
 });
 
-var uploadFile = multer({ storage: storage, fileFilter: imageFilter });
+// var uploadFile = multer({ storage: storage, fileFilter: imageFilter });
+var uploadFile = multer({ storage: storage });
 
 // Employees routes
 app.get("/employees", async (req, res) => {
