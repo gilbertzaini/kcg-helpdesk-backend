@@ -71,6 +71,18 @@ app.post("/employees", async (req, res) => {
   }
 });
 
+app.get("/employees/:id", async (req, res) => {
+  try {
+    const response = await Employees.findByPk(req.params.id);
+
+    console.log(response);
+    return res.status(201).json({ msg: "Employee Data", Employees: response });
+  } catch (e) {
+    console.log(e.message);
+    return res.status(500).send(e.message);
+  }
+});
+
 // Tickets routes
 app.get("/tickets", async (req, res) => {
   try {
