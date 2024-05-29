@@ -142,11 +142,12 @@ app.get("/tickets", async (req, res) => {
   }
 });
 
-// Get tickets by status
-app.get("/tickets/:status/status", async (req, res) => {
+// Get tickets by status and div
+app.get("/tickets/:employee_id/:status", async (req, res) => {
   try {
+    const user = await Employees.findByPk(req.params.employee_id);
     const response = await Tickets.findAll({
-      where: { status: req.params.status },
+      where: { status: req.params.status, divisi: user.division },
     });
 
     console.log(response);
