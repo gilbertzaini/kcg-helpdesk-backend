@@ -116,7 +116,7 @@ app.post("/employees", async (req, res) => {
 });
 
 // get employee by ID
-app.get("/employees/:id", async (req, res) => {
+app.get("/employees/:id/detail", async (req, res) => {
   try {
     const response = await Employees.findByPk(req.params.id);
 
@@ -143,7 +143,7 @@ app.get("/tickets", async (req, res) => {
 });
 
 // Get tickets by status
-app.get("/tickets/:status", async (req, res) => {
+app.get("/tickets/:status/status", async (req, res) => {
   try {
     const response = await Tickets.findAll({
       where: { status: req.params.status },
@@ -187,11 +187,11 @@ app.get("/tickets/:id", async (req, res) => {
 
 // Create ticket
 app.post(
-  "/tickets/:request_id",
+  "/tickets/:employee_id",
   uploadFile.single("file_path"),
   async (req, res) => {
     try {
-      const reqUser = await Employees.findByPk(req.params.request_id);
+      const reqUser = await Employees.findByPk(req.params.employee_id);
       req.body.assigned_by = reqUser.employee_id;
 
       if (req.file) {
@@ -211,11 +211,11 @@ app.post(
 );
 
 // Update ticket
-app.patch("/tickets/:id/:user_id", async (req, res) => {
+app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
   try {
     console.log(req.body);
     const user = await Employees.findByPk(req.params.user_id);
-    const selectedTicket = await Tickets.findByPk(req.params.id);
+    const selectedTicket = await Tickets.findByPk(req.params.ticket_id);
 
     // Authorization & patch
     if (
@@ -244,7 +244,7 @@ app.patch("/tickets/:id/:user_id", async (req, res) => {
 
       const response = await Tickets.update(req.body, {
         where: {
-          id: req.params.id,
+          id: req.params.ticket_id,
         },
       });
 

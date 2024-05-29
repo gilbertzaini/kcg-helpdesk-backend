@@ -1,0 +1,14 @@
+#Employees
+get all employees: /employees | GET
+get employees by div: /employees/:employee_id | GET
+get employees by div: /employees/:id/detail | GET
+create employee: /employees | POST
+
+#Tickets
+get all tickets: /tickets | GET
+get tickets by status: /tickets/:status/status | GET
+get tickets by user and status: /tickets/:status/:employee_id | GET
+get ticket by id: /tickets/:id | GET
+create ticket: /tickets/:employee_id | POST
+update ticket: /tickets/:ticket_id/:user_id | PATCH
+delete ticket: /tickets/:id | DELETE
