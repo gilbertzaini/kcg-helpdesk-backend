@@ -37,6 +37,7 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
         allowNull: false,
+        default: 'new'
       },
       file_path: {
         type: Sequelize.STRING,
