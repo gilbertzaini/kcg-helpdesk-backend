@@ -172,13 +172,13 @@ app.post(
 app.patch("/tickets/:id/:user_id", async (req, res) => {
   try {
     console.log(req.body);
-    const assigner = await Employees.findByPk(req.params.user_id);
+    const user = await Employees.findByPk(req.params.user_id);
     const selectedTicket = await Tickets.findByPk(req.params.id);
 
     // Authorization & patch
     if (
       selectedTicket.status === "pending" &&
-      selectedTicket.assigned_to === assigner.employee_id
+      selectedTicket.assigned_to === user.employee_id
     ) {
       req.body.status = "QC";
       const response = await Tickets.update(req.body, {
@@ -192,11 +192,11 @@ app.patch("/tickets/:id/:user_id", async (req, res) => {
     }
 
     if (
-      (assigner.role === "Assigner" && selectedTicket.status === "new") ||
-      (assigner.role === "QC" && selectedTicket.status === "QC")
+      (user.role === "Assigner" && selectedTicket.status === "new") ||
+      (user.role === "QC" && selectedTicket.status === "QC")
     ) {
-      if (assigner.role === "Assigner") req.body.status = "pending";
-      else if (assigner.role === "QC") req.body.status = "done";
+      if (user.role === "Assigner") req.body.status = "pending";
+      else if (user.role === "QC") req.body.status = "done";
 
       const response = await Tickets.update(req.body, {
         where: {
@@ -209,7 +209,7 @@ app.patch("/tickets/:id/:user_id", async (req, res) => {
     }
 
     return res.status(400).json({
-      msg: `${assigner.name}(${assigner.employee_id}) doesn't have the authority`,
+      msg: `${user.name}(${user.employee_id}) doesn't have the authority`,
     });
   } catch (e) {
     console.log(e.message);
