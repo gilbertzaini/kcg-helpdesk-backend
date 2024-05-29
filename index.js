@@ -157,6 +157,21 @@ app.get("/tickets/:status", async (req, res) => {
   }
 });
 
+// Get tickets by user and status
+app.get("/tickets/:status/:employee_id", async (req, res) => {
+  try {
+    const response = await Tickets.findAll({
+      where: { status: req.params.status, assigned_to: req.params.employee_id },
+    });
+
+    console.log(response);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.log(e.message);
+    return res.status(500).send(e.message);
+  }
+});
+
 // Get ticket by ID
 app.get("/tickets/:id", async (req, res) => {
   try {
