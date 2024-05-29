@@ -76,6 +76,7 @@ app.get("/employees/:employee_id", async (req, res) => {
         division: employee.division,
         newTicket: 0,
         pendingTicket: 0,
+        processTicket: 0,
         QCTicket: 0,
         doneTicket: 0,
       };
@@ -84,6 +85,7 @@ app.get("/employees/:employee_id", async (req, res) => {
         if (ticket.assigned_by === employee.employee_id) {
           if (ticket.status === "new") newEmpBody.newTicket += 1;
           if (ticket.status === "pending") newEmpBody.pendingTicket += 1;
+          if (ticket.status === "process") newEmpBody.processTicket += 1;
           if (ticket.status === "QC") newEmpBody.QCTicket += 1;
           if (ticket.status === "done") newEmpBody.doneTicket += 1;
         }
