@@ -62,10 +62,36 @@ app.get("/employees", async (req, res) => {
 // Get employees by division
 app.get("/employees/:employee_id", async (req, res) => {
   try {
+    const tickets = await Tickets.findAll();
     const user = await Employees.findByPk(req.params.employee_id);
-    const response = await Employees.findAll({where: {division: user.division}});
+    const employees = await Employees.findAll({
+      where: { division: user.division },
+    });
+    const response = [];
 
-    console.log(response);
+    employees.forEach((employee) => {
+      const newEmpBody = {
+        employee_id: employee.employee_id,
+        name: employee.name,
+        division: employee.division,
+        newTicket: 0,
+        pendingTicket: 0,
+        QCTicket: 0,
+        doneTicket: 0,
+      };
+
+      tickets.forEach((ticket) => {
+        if (ticket.assigned_by === employee.employee_id) {
+          if (ticket.status === "new") newEmpBody.newTicket += 1;
+          if (ticket.status === "pending") newEmpBody.pendingTicket += 1;
+          if (ticket.status === "QC") newEmpBody.QCTicket += 1;
+          if (ticket.status === "done") newEmpBody.doneTicket += 1;
+        }
+      });
+
+      response.push(newEmpBody);
+    });
+
     return res.status(200).json(response);
   } catch (e) {
     console.log(e.message);
