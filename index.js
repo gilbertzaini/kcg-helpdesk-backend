@@ -108,36 +108,59 @@ app.get("/tickets/:id", async (req, res) => {
   }
 });
 
+app.post(
+  "/tickets/:request_id",
+  uploadFile.single("file_path"),
+  async (req, res) => {
+    try {
+      const reqUser = await Employees.findByPk(req.params.request_id);
+      req.body.assigned_by = reqUser.employee_id;
+      req.body.divisi = reqUser.division;
 
-
-app.post("/tickets", uploadFile.single("file_path"), async (req, res) => {
-  try {
-    if (req.file) {
-      req.body.file_path = `uploads/${req.file.filename}`;
-    }
-    const newTicket = await Tickets.create(req.body);
-
-    console.log(response);
-    return res.status(201).json({ msg: "Ticket Created", Tickets: newTicket });
-  } catch (e) {
-    console.log(e.message);
-    return res.status(500).send(e.message);
-  }
-});
-
-app.patch("/tickets/:id", uploadFile.single("file_path"), async (req, res) => {
-  try {
-    const { assigned_by, status, file_path } = req.body;
-    const assigner = await Employees.findByPk(assigned_by);
-
-    // Authorization & patch
-    if (
-      (assigner.role === "Assigner" && status === "pending") ||
-      (assigner.role === "QC" && status === "done")
-    ) {
       if (req.file) {
         req.body.file_path = `uploads/${req.file.filename}`;
       }
+      const newTicket = await Tickets.create(req.body);
+
+      console.log(response);
+      return res
+        .status(201)
+        .json({ msg: "Ticket Created", Tickets: newTicket });
+    } catch (e) {
+      console.log(e.message);
+      return res.status(500).send(e.message);
+    }
+  }
+);
+
+app.patch("/tickets/:id/:user_id", async (req, res) => {
+  try {
+    console.log(req.body);
+    const assigner = await Employees.findByPk(req.params.user_id);
+    const selectedTicket = await Tickets.findByPk(req.params.id);
+
+    // Authorization & patch
+    if (
+      selectedTicket.status === "pending" &&
+      selectedTicket.assigned_to === assigner.employee_id
+    ) {
+      req.body.status = "QC";
+      const response = await Tickets.update(req.body, {
+        where: {
+          id: req.params.id,
+        },
+      });
+
+      console.log(response);
+      return res.status(200).json({ msg: "Ticket Updated", Tickets: response });
+    }
+
+    if (
+      (assigner.role === "Assigner" && selectedTicket.status === "new") ||
+      (assigner.role === "QC" && selectedTicket.status === "QC")
+    ) {
+      if (assigner.role === "Assigner") req.body.status = "pending";
+      else if (assigner.role === "QC") req.body.status = "done";
 
       const response = await Tickets.update(req.body, {
         where: {
@@ -147,11 +170,11 @@ app.patch("/tickets/:id", uploadFile.single("file_path"), async (req, res) => {
 
       console.log(response);
       return res.status(200).json({ msg: "Ticket Updated", Tickets: response });
-    } else {
-      return res.status(400).json({
-        msg: `${assigner.name}(${assigned_by}) doesn't have the authority`,
-      });
     }
+    
+    return res.status(400).json({
+      msg: `${assigner.name}(${assigner.employee_id}) doesn't have the authority`,
+    });
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);

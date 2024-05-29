@@ -23,7 +23,6 @@ module.exports = {
       },
       divisi: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       deadline: {
         type: Sequelize.DATE,

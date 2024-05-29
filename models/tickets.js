@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       title: { type: DataTypes.STRING, allowNull: false },
       // subtitle: { type: DataTypes.STRING, allowNull: false },
       description: { type: DataTypes.STRING, allowNull: false },
-      divisi: { type: DataTypes.STRING, allowNull: false },
+      divisi: { type: DataTypes.STRING },
       deadline: { type: DataTypes.DATE },
       assigned_by: { type: DataTypes.STRING },
       assigned_to: { type: DataTypes.STRING },
