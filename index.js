@@ -203,10 +203,12 @@ app.patch("/tickets/:id/:user_id", async (req, res) => {
 
     // Authorization & patch
     if (
-      selectedTicket.status === "pending" &&
+      (selectedTicket.status === "pending" ||
+        selectedTicket.status === "process") &&
       selectedTicket.assigned_to === user.employee_id
     ) {
-      req.body.status = "QC";
+      if (selectedTicket.status === "pending") req.body.status = "process";
+      else req.body.status = "QC";
       const response = await Tickets.update(req.body, {
         where: {
           id: req.params.id,
