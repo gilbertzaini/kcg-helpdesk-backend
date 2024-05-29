@@ -46,6 +46,7 @@ var storage = multer.diskStorage({
 var uploadFile = multer({ storage: storage });
 
 // Employees routes
+// Get all employees
 app.get("/employees", async (req, res) => {
   try {
     const response = await Employees.findAll();
@@ -58,6 +59,21 @@ app.get("/employees", async (req, res) => {
   }
 });
 
+// Get employees by division
+app.get("/employees/:employee_id", async (req, res) => {
+  try {
+    const user = await Employees.findByPk(req.params.employee_id);
+    const response = await Employees.findAll({where: {division: user.division}});
+
+    console.log(response);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.log(e.message);
+    return res.status(500).send(e.message);
+  }
+});
+
+// Create employee
 app.post("/employees", async (req, res) => {
   try {
     console.log(req.body);
@@ -71,6 +87,7 @@ app.post("/employees", async (req, res) => {
   }
 });
 
+// get employee by ID
 app.get("/employees/:id", async (req, res) => {
   try {
     const response = await Employees.findByPk(req.params.id);
@@ -84,6 +101,7 @@ app.get("/employees/:id", async (req, res) => {
 });
 
 // Tickets routes
+// Get all tickets
 app.get("/tickets", async (req, res) => {
   try {
     const response = await Tickets.findAll();
@@ -96,6 +114,22 @@ app.get("/tickets", async (req, res) => {
   }
 });
 
+// Get tickets by status
+app.get("/tickets/:status", async (req, res) => {
+  try {
+    const response = await Tickets.findAll({
+      where: { status: req.params.status },
+    });
+
+    console.log(response);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.log(e.message);
+    return res.status(500).send(e.message);
+  }
+});
+
+// Get ticket by ID
 app.get("/tickets/:id", async (req, res) => {
   try {
     const response = await Tickets.findByPk(req.params.id);
@@ -108,6 +142,7 @@ app.get("/tickets/:id", async (req, res) => {
   }
 });
 
+// Create ticket
 app.post(
   "/tickets/:request_id",
   uploadFile.single("file_path"),
@@ -133,6 +168,7 @@ app.post(
   }
 );
 
+// Update ticket
 app.patch("/tickets/:id/:user_id", async (req, res) => {
   try {
     console.log(req.body);
@@ -171,7 +207,7 @@ app.patch("/tickets/:id/:user_id", async (req, res) => {
       console.log(response);
       return res.status(200).json({ msg: "Ticket Updated", Tickets: response });
     }
-    
+
     return res.status(400).json({
       msg: `${assigner.name}(${assigner.employee_id}) doesn't have the authority`,
     });
@@ -181,6 +217,7 @@ app.patch("/tickets/:id/:user_id", async (req, res) => {
   }
 });
 
+// Delete ticket
 app.delete("/tickets/:id", async (req, res) => {
   try {
     const response = await Tickets.destroy({
