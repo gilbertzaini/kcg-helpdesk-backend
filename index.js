@@ -82,7 +82,7 @@ app.get("/employees/:employee_id", async (req, res) => {
       };
 
       tickets.forEach((ticket) => {
-        if (ticket.assigned_by === employee.employee_id) {
+        if (ticket.assigned_to === employee.employee_id) {
           if (ticket.status === "new") newEmpBody.newTicket += 1;
           if (ticket.status === "pending") newEmpBody.pendingTicket += 1;
           if (ticket.status === "process") newEmpBody.processTicket += 1;
