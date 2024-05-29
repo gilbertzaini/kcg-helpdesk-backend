@@ -159,7 +159,7 @@ app.get("/tickets/:employee_id/:status", async (req, res) => {
 });
 
 // Get tickets by user and status
-app.get("/tickets/:status/:employee_id", async (req, res) => {
+app.get("/tickets/:status/user/:employee_id", async (req, res) => {
   try {
     const response = await Tickets.findAll({
       where: { status: req.params.status, assigned_to: req.params.employee_id },
