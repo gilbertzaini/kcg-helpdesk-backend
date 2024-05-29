@@ -12,3 +12,14 @@ get ticket by id: /tickets/:id | GET
 create ticket: /tickets/:employee_id | POST
 update ticket: /tickets/:ticket_id/:user_id | PATCH
 delete ticket: /tickets/:id | DELETE
+
+#Status
+new
+pending
+process
+QC
+done
+
+#Role
+Assigner
+QC
