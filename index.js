@@ -129,6 +129,25 @@ app.get("/employees/:id/detail", async (req, res) => {
   }
 });
 
+// delete employee
+app.delete("/employees/:id", async (req, res) => {
+  try {
+    const response = await Employees.destroy({
+      where: {
+        employee_id: req.params.id,
+      },
+    });
+
+    console.log(response);
+    if (response === 0)
+      return res.status(404).json({ msg: "Employee not found" });
+    else return res.status(200).json({ msg: "Employee Deleted" });
+  } catch (e) {
+    console.log(e.message);
+    return res.status(500).send(e.message);
+  }
+});
+
 // Tickets routes
 // Get all tickets
 app.get("/tickets", async (req, res) => {
