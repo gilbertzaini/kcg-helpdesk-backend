@@ -39,7 +39,7 @@ var storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, `${moment().format()}-${file.originalname.replace(/\s+/g, '')}`);
+    cb(null, `${moment().format()}-${file.originalname.replace(/\s+/g, "")}`);
   },
 });
 
@@ -207,7 +207,7 @@ app.post(
         const fileBody = {
           path: `uploads/${file.filename}`,
           ticket_id: newTicket.id,
-          is_deleted: false
+          is_deleted: false,
         };
         filesArr.push(fileBody);
       });
@@ -277,12 +277,47 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
   }
 });
 
+// Soft-delete ticket
+app.patch("/tickets/:id", async (req, res) => {
+  try {
+    const payload = {
+      is_deleted: true,
+    };
+
+    const response = await Tickets.update(payload, {
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    await Files.update(payload, {
+      where: {
+        ticket_id: req.params.id,
+      },
+    });
+
+    console.log(response);
+    if (response === 0)
+      return res.status(404).json({ msg: "Ticket not found" });
+    else return res.status(200).json({ msg: "Ticket Deleted" });
+  } catch (e) {
+    console.log(e.message);
+    return res.status(500).send(e.message);
+  }
+});
+
 // Delete ticket
 app.delete("/tickets/:id", async (req, res) => {
   try {
     const response = await Tickets.destroy({
       where: {
         id: req.params.id,
+      },
+    });
+
+    await Files.destroy({
+      where: {
+        ticket_id: req.params.id,
       },
     });
 
