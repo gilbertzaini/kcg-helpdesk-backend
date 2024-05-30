@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const multer = require("multer");
-const moment = require("moment");
 
 const { Tickets, Employees, Files } = require("./models");
 
@@ -39,7 +38,7 @@ var storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, `${moment().format()}-${file.originalname.replace(/\s+/g, "")}`);
+    cb(null, `${new Date()}-${file.originalname.replace(/\s+/g, "")}`);
   },
 });
 
