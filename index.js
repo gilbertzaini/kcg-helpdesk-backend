@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const multer = require("multer");
+const moment = require("moment");
 
-const { Tickets, Employees } = require("./models");
+const { Tickets, Employees, Files } = require("./models");
 
 const app = express();
 
@@ -38,7 +39,7 @@ var storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-bezkoder-${file.originalname}`);
+    cb(null, `${moment().format()}-${file.originalname.replace(/\s+/g, '')}`);
   },
 });
 
@@ -189,21 +190,35 @@ app.get("/tickets/:id", async (req, res) => {
 // Create ticket
 app.post(
   "/tickets/:employee_id",
-  uploadFile.single("file_path"),
+  uploadFile.array("file", 5),
   async (req, res) => {
     try {
       const reqUser = await Employees.findByPk(req.params.employee_id);
+      if (!reqUser) {
+        return res.status(404).json({ msg: "Employee not found" });
+      }
+
       req.body.assigned_by = reqUser.employee_id;
 
-      if (req.file) {
-        req.body.file_path = `uploads/${req.file.filename}`;
-      }
       const newTicket = await Tickets.create(req.body);
 
-      console.log(response);
+      const filesArr = [];
+      req.files.forEach(async (file) => {
+        const fileBody = {
+          path: `uploads/${file.filename}`,
+          ticket_id: newTicket.id,
+          is_deleted: false
+        };
+        filesArr.push(fileBody);
+      });
+
+      console.log(filesArr);
+      const resp = await Files.bulkCreate(filesArr);
+      console.log(resp);
+
       return res
         .status(201)
-        .json({ msg: "Ticket Created", Tickets: newTicket });
+        .json({ msg: "Ticket Created", Tickets: newTicket, Files: resp });
     } catch (e) {
       console.log(e.message);
       return res.status(500).send(e.message);
@@ -258,7 +273,7 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
     });
   } catch (e) {
     console.log(e.message);
-    return res.status(500).send(e.message);
+    // return res.status(500).send(e.message);
   }
 });
 
