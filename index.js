@@ -11,7 +11,8 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:4200",
+    // origin: "http://localhost:4200",
+    origin: '*'
   })
 );
 
@@ -38,7 +39,7 @@ var storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, `${new Date()}-${file.originalname.replace(/\s+/g, "")}`);
+    cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '')}`);
   },
 });
 
@@ -225,7 +226,7 @@ app.post(
         const fileBody = {
           path: `uploads/${file.filename}`,
           ticket_id: newTicket.id,
-          is_deleted: false,
+          is_deleted: false
         };
         filesArr.push(fileBody);
       });
