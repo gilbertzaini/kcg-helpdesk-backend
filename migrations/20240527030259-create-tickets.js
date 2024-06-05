@@ -33,6 +33,9 @@ module.exports = {
       assigned_by_date: {
         type: Sequelize.DATE,
       },
+      assigned_by_div: {
+        type: Sequelize.STRING,
+      },
       assigned_to: {
         type: Sequelize.STRING,
       },

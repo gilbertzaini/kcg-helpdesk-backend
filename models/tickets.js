@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       deadline: { type: DataTypes.DATE },
       assigned_by: { type: DataTypes.STRING },
       assigned_by_date: { type: DataTypes.DATE },
+      assigned_by_div: { type: DataTypes.STRING },
       assigned_to: { type: DataTypes.STRING },
       assigned_to_date: { type: DataTypes.DATE },
       status: { type: DataTypes.STRING, allowNull: false, defaultValue: 'new' },
