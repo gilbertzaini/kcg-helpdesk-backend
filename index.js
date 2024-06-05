@@ -12,18 +12,15 @@ app.use(
   cors({
     credentials: true,
     // origin: "http://localhost:4200",
-    origin: '*'
+    origin: "*",
   })
 );
 
-// Routes
+// Middlewares
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-app.get("/", (req, res) =>
-  res.status(200).send({ message: "Server is running." })
-);
+app.use(express.static("public"));
 
 // Multer Config
 const imageFilter = (req, file, cb) => {
@@ -36,15 +33,20 @@ const imageFilter = (req, file, cb) => {
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, "public/uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '')}`);
+    cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, "")}`);
   },
 });
 
 // var uploadFile = multer({ storage: storage, fileFilter: imageFilter });
 var uploadFile = multer({ storage: storage });
+
+// Routes
+app.get("/", (req, res) =>
+  res.status(200).send({ message: "Server is running." })
+);
 
 // Employees routes
 // Get all employees
@@ -152,10 +154,28 @@ app.delete("/employees/:id", async (req, res) => {
 // Get all tickets
 app.get("/tickets", async (req, res) => {
   try {
-    const response = await Tickets.findAll();
+    const tickets = await Tickets.findAll();
 
-    console.log(response);
-    return res.status(200).json(response);
+    const updatedTickets = await Promise.all(
+      tickets.map(async (ticket) => {
+        const files = await Files.findAll({
+          where: {
+            ticket_id: ticket.id,
+          },
+        });
+
+        const paths = [];
+        files.forEach((file) => {
+          paths.push(file.path);
+        });
+
+        ticket.dataValues.path = paths;
+        return ticket;
+      })
+    );
+
+    console.log(updatedTickets);
+    return res.status(200).json(updatedTickets);
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -166,12 +186,30 @@ app.get("/tickets", async (req, res) => {
 app.get("/tickets/:employee_id/:status", async (req, res) => {
   try {
     const user = await Employees.findByPk(req.params.employee_id);
-    const response = await Tickets.findAll({
+    const tickets = await Tickets.findAll({
       where: { status: req.params.status, divisi: user.division },
     });
 
-    console.log(response);
-    return res.status(200).json(response);
+    const updatedTickets = await Promise.all(
+      tickets.map(async (ticket) => {
+        const files = await Files.findAll({
+          where: {
+            ticket_id: ticket.id,
+          },
+        });
+
+        const paths = [];
+        files.forEach((file) => {
+          paths.push(file.path);
+        });
+
+        ticket.dataValues.path = paths;
+        return ticket;
+      })
+    );
+
+    console.log(updatedTickets);
+    return res.status(200).json(updatedTickets);
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -181,12 +219,30 @@ app.get("/tickets/:employee_id/:status", async (req, res) => {
 // Get tickets by user and status
 app.get("/tickets/:status/user/:employee_id", async (req, res) => {
   try {
-    const response = await Tickets.findAll({
+    const tickets = await Tickets.findAll({
       where: { status: req.params.status, assigned_to: req.params.employee_id },
     });
 
-    console.log(response);
-    return res.status(200).json(response);
+    const updatedTickets = await Promise.all(
+      tickets.map(async (ticket) => {
+        const files = await Files.findAll({
+          where: {
+            ticket_id: ticket.id,
+          },
+        });
+
+        const paths = [];
+        files.forEach((file) => {
+          paths.push(file.path);
+        });
+
+        ticket.dataValues.path = paths;
+        return ticket;
+      })
+    );
+
+    console.log(updatedTickets);
+    return res.status(200).json(updatedTickets);
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -196,10 +252,23 @@ app.get("/tickets/:status/user/:employee_id", async (req, res) => {
 // Get ticket by ID
 app.get("/tickets/:id", async (req, res) => {
   try {
-    const response = await Tickets.findByPk(req.params.id);
+    const ticket = await Tickets.findByPk(req.params.id);
 
-    console.log(response);
-    return res.status(200).json(response);
+    const files = await Files.findAll({
+      where: {
+        ticket_id: ticket.id,
+      },
+    });
+
+    const paths = [];
+    files.forEach((file) => {
+      paths.push(file.path);
+    });
+
+    ticket.dataValues.path = paths;
+
+    console.log(ticket);
+    return res.status(200).json(ticket);
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -226,7 +295,7 @@ app.post(
         const fileBody = {
           path: `uploads/${file.filename}`,
           ticket_id: newTicket.id,
-          is_deleted: false
+          is_deleted: false,
         };
         filesArr.push(fileBody);
       });
