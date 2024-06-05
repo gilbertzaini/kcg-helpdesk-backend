@@ -208,7 +208,7 @@ app.get("/tickets/:employee_id/:status", async (req, res) => {
       })
     );
 
-    console.log(updatedTickets);
+    // console.log(updatedTickets);
     return res.status(200).json(updatedTickets);
   } catch (e) {
     console.log(e.message);
@@ -286,11 +286,14 @@ app.post(
         return res.status(404).json({ msg: "Employee not found" });
       }
 
-      req.body.assigned_by = reqUser.employee_id;
-      req.body.assigned_by_div = reqUser.division;
+      req.body.request_by = reqUser.employee_id;
+      req.body.request_by_div = reqUser.division;
       req.body.deadline = null;
 
-      const newTicket = await Tickets.create(req.body);
+      const newTicket = await Tickets.create({
+        ...req.body,
+        request_by_date: new Date(),
+      });
 
       const filesArr = [];
       req.files.forEach(async (file) => {
@@ -331,11 +334,19 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
     ) {
       if (selectedTicket.status === "pending") req.body.status = "process";
       else req.body.status = "QC";
-      const response = await Tickets.update(req.body, {
-        where: {
-          id: req.params.ticket_id,
+      const response = await Tickets.update(
+        {
+          ...req.body,
+          assigned_by: req.params.user_id,
+          assigned_to: req.body.employee_id,
+          assigned_date: new Date(),
         },
-      });
+        {
+          where: {
+            id: req.params.ticket_id,
+          },
+        }
+      );
 
       console.log(response);
       return res.status(200).json({ msg: "Ticket Updated", Tickets: response });
@@ -348,11 +359,19 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
       if (user.role === "Assigner") req.body.status = "pending";
       else if (user.role === "QC") req.body.status = "solve";
 
-      const response = await Tickets.update(req.body, {
-        where: {
-          id: req.params.ticket_id,
+      const response = await Tickets.update(
+        {
+          ...req.body,
+          assigned_by: req.params.user_id,
+          assigned_to: req.body.employee_id,
+          assigned_date: new Date(),
         },
-      });
+        {
+          where: {
+            id: req.params.ticket_id,
+          },
+        }
+      );
 
       console.log(response);
       return res.status(200).json({ msg: "Ticket Updated", Tickets: response });

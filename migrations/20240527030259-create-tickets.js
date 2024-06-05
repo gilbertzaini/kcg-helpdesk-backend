@@ -23,23 +23,27 @@ module.exports = {
       },
       divisi: {
         type: Sequelize.STRING,
+        allowNull: false
       },
       deadline: {
         type: Sequelize.DATE,
       },
-      assigned_by: {
+      request_by: {
         type: Sequelize.STRING,
       },
-      assigned_by_date: {
+      request_by_date: {
         type: Sequelize.DATE,
       },
-      assigned_by_div: {
+      request_by_div: {
+        type: Sequelize.STRING,
+      },
+      assigned_by: {
         type: Sequelize.STRING,
       },
       assigned_to: {
         type: Sequelize.STRING,
       },
-      assigned_to_date: {
+      assigned_date: {
         type: Sequelize.DATE,
       },
       status: {
