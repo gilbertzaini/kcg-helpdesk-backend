@@ -3,6 +3,7 @@ get all employees: /employees | GET
 get employees by div: /employees/:employee_id | GET
 get employees by div: /employees/:id/detail | GET
 create employee: /employees | POST
+delete employee: /employees/:id | DELETE
 
 #Tickets
 get all tickets: /tickets | GET
@@ -11,6 +12,7 @@ get tickets by user and status: /tickets/:status/user/:employee_id | GET
 get ticket by id: /tickets/:id | GET
 create ticket: /tickets/:employee_id | POST
 update ticket: /tickets/:ticket_id/:user_id | PATCH
+soft-delete ticket: /tickets/:ticket_id | PATCH
 delete ticket: /tickets/:id | DELETE
 
 #Status

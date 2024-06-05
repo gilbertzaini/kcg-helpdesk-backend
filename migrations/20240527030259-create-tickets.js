@@ -30,16 +30,23 @@ module.exports = {
       assigned_by: {
         type: Sequelize.STRING,
       },
+      assigned_by_date: {
+        type: Sequelize.DATE,
+      },
       assigned_to: {
         type: Sequelize.STRING,
+      },
+      assigned_to_date: {
+        type: Sequelize.DATE,
       },
       status: {
         type: Sequelize.STRING,
         allowNull: false,
-        default: 'new'
+        default: "new",
       },
-      file_path: {
-        type: Sequelize.STRING,
+      is_deleted: {
+        type: Sequelize.BOOLEAN,
+        default: false,
       },
       createdAt: {
         allowNull: false,

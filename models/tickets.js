@@ -19,9 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       divisi: { type: DataTypes.STRING },
       deadline: { type: DataTypes.DATE },
       assigned_by: { type: DataTypes.STRING },
+      assigned_by_date: { type: DataTypes.DATE },
       assigned_to: { type: DataTypes.STRING },
+      assigned_to_date: { type: DataTypes.DATE },
       status: { type: DataTypes.STRING, allowNull: false, defaultValue: 'new' },
-      file_path: { type: DataTypes.STRING },
+      is_deleted: {type: DataTypes.BOOLEAN, defaultValue: false}      
     },
     {
       sequelize,
