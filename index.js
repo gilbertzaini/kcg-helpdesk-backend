@@ -287,6 +287,7 @@ app.post(
       }
 
       req.body.assigned_by = reqUser.employee_id;
+      req.body.assigned_by_div = reqUser.division;
 
       const newTicket = await Tickets.create(req.body);
 
