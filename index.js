@@ -81,7 +81,7 @@ app.get("/employees/:employee_id", async (req, res) => {
         pendingTicket: 0,
         processTicket: 0,
         QCTicket: 0,
-        doneTicket: 0,
+        solveTicket: 0,
       };
 
       tickets.forEach((ticket) => {
@@ -90,7 +90,7 @@ app.get("/employees/:employee_id", async (req, res) => {
           if (ticket.status === "pending") newEmpBody.pendingTicket += 1;
           if (ticket.status === "process") newEmpBody.processTicket += 1;
           if (ticket.status === "QC") newEmpBody.QCTicket += 1;
-          if (ticket.status === "done") newEmpBody.doneTicket += 1;
+          if (ticket.status === "solve") newEmpBody.solveTicket += 1;
         }
       });
 
@@ -345,7 +345,7 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
       (user.role === "QC" && selectedTicket.status === "QC")
     ) {
       if (user.role === "Assigner") req.body.status = "pending";
-      else if (user.role === "QC") req.body.status = "done";
+      else if (user.role === "QC") req.body.status = "solve";
 
       const response = await Tickets.update(req.body, {
         where: {

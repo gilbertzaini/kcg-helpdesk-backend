@@ -46,7 +46,7 @@
 * pending
 * process
 * QC
-* done
+* solve
 
 #  Role
 * Assigner
