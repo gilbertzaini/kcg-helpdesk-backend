@@ -164,7 +164,12 @@ app.get("/tickets", async (req, res) => {
           },
         });
 
-        ticket.dataValues.path = files;
+        const paths = [];
+        files.forEach((file) => {
+          paths.push(file.path);
+        });
+
+        ticket.dataValues.path = paths;
         return ticket;
       })
     );
@@ -193,7 +198,12 @@ app.get("/tickets/:employee_id/:status", async (req, res) => {
           },
         });
 
-        ticket.dataValues.path = files;
+        const paths = [];
+        files.forEach((file) => {
+          paths.push(file.path);
+        });
+
+        ticket.dataValues.path = paths;
         return ticket;
       })
     );
@@ -218,10 +228,15 @@ app.get("/tickets/:status/user/:employee_id", async (req, res) => {
         const files = await Files.findAll({
           where: {
             ticket_id: ticket.id,
-          }
+          },
         });
 
-        ticket.dataValues.path = files;
+        const paths = [];
+        files.forEach((file) => {
+          paths.push(file.path);
+        });
+
+        ticket.dataValues.path = paths;
         return ticket;
       })
     );
@@ -241,11 +256,16 @@ app.get("/tickets/:id", async (req, res) => {
 
     const files = await Files.findAll({
       where: {
-        ticket_id: ticket.id
-      }
-    })
+        ticket_id: ticket.id,
+      },
+    });
 
-    ticket.dataValues.path = files;
+    const paths = [];
+    files.forEach((file) => {
+      paths.push(file.path);
+    });
+
+    ticket.dataValues.path = paths;
 
     console.log(ticket);
     return res.status(200).json(ticket);
