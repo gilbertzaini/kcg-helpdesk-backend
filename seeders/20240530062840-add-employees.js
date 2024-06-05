@@ -36,6 +36,38 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        employee_id: "KCG-05691",
+        name: "Ilham",
+        division: "BusDev",
+        role: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        employee_id: "KCG-05546",
+        name: "Ashel",
+        division: "LnD",
+        role: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        employee_id: "KCG-05542",
+        name: "Novia",
+        division: "HRGA",
+        role: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        employee_id: "KCG-05550",
+        name: "Andrew",
+        division: "Marketing",
+        role: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
     /**
      * Add seed commands here.
@@ -52,7 +84,16 @@ module.exports = {
     await queryInterface.bulkDelete(
       "Employees",
       {
-        employee_id: ["KCG-05579", "KCG-05545", "KCG-05515", "KCG-05526"],
+        employee_id: [
+          "KCG-05579",
+          "KCG-05545",
+          "KCG-05515",
+          "KCG-05526",
+          "KCG-05691",
+          "KCG-05546",
+          "KCG-05542",
+          "KCG-05550",
+        ],
       },
       {}
     );
