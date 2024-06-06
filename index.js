@@ -1,9 +1,9 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const multer = require("multer");
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const multer = require('multer');
 
-const { Tickets, Employees, Files } = require("./models");
+const { Tickets, Employees, Files } = require('./models');
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.use(
   cors({
     credentials: true,
     // origin: "http://localhost:4200",
-    origin: "*",
+    origin: '*',
   })
 );
 
@@ -20,23 +20,23 @@ app.use(
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 // Multer Config
 const imageFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
+  if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb("Please upload only images.", false);
+    cb('Please upload only images.', false);
   }
 };
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/uploads/");
+    cb(null, 'public/uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, "")}`);
+    cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '')}`);
   },
 });
 
@@ -44,13 +44,13 @@ var storage = multer.diskStorage({
 var uploadFile = multer({ storage: storage });
 
 // Routes
-app.get("/", (req, res) =>
-  res.status(200).send({ message: "Server is running." })
+app.get('/', (req, res) =>
+  res.status(200).send({ message: 'Server is running.' })
 );
 
 // Employees routes
 // Get all employees
-app.get("/employees", async (req, res) => {
+app.get('/employees', async (req, res) => {
   try {
     const response = await Employees.findAll();
 
@@ -63,7 +63,7 @@ app.get("/employees", async (req, res) => {
 });
 
 // Get employees by division
-app.get("/employees/:employee_id", async (req, res) => {
+app.get('/employees/:employee_id', async (req, res) => {
   try {
     const tickets = await Tickets.findAll();
     const user = await Employees.findByPk(req.params.employee_id);
@@ -86,11 +86,11 @@ app.get("/employees/:employee_id", async (req, res) => {
 
       tickets.forEach((ticket) => {
         if (ticket.assigned_to === employee.employee_id) {
-          if (ticket.status === "new") newEmpBody.newTicket += 1;
-          if (ticket.status === "pending") newEmpBody.pendingTicket += 1;
-          if (ticket.status === "process") newEmpBody.processTicket += 1;
-          if (ticket.status === "QC") newEmpBody.QCTicket += 1;
-          if (ticket.status === "solve") newEmpBody.solveTicket += 1;
+          if (ticket.status === 'new') newEmpBody.newTicket += 1;
+          if (ticket.status === 'pending') newEmpBody.pendingTicket += 1;
+          if (ticket.status === 'process') newEmpBody.processTicket += 1;
+          if (ticket.status === 'QC') newEmpBody.QCTicket += 1;
+          if (ticket.status === 'solve') newEmpBody.solveTicket += 1;
         }
       });
 
@@ -105,13 +105,13 @@ app.get("/employees/:employee_id", async (req, res) => {
 });
 
 // Create employee
-app.post("/employees", async (req, res) => {
+app.post('/employees', async (req, res) => {
   try {
     console.log(req.body);
     const newEmp = await Employees.create(req.body);
 
     console.log(response);
-    return res.status(201).json({ msg: "Employee Created", Employees: newEmp });
+    return res.status(201).json({ msg: 'Employee Created', Employees: newEmp });
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -119,12 +119,12 @@ app.post("/employees", async (req, res) => {
 });
 
 // get employee by ID
-app.get("/employees/:id/detail", async (req, res) => {
+app.get('/employees/:id/detail', async (req, res) => {
   try {
     const response = await Employees.findByPk(req.params.id);
 
     console.log(response);
-    return res.status(201).json({ msg: "Employee Data", Employees: response });
+    return res.status(201).json({ msg: 'Employee Data', Employees: response });
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -132,7 +132,7 @@ app.get("/employees/:id/detail", async (req, res) => {
 });
 
 // delete employee
-app.delete("/employees/:id", async (req, res) => {
+app.delete('/employees/:id', async (req, res) => {
   try {
     const response = await Employees.destroy({
       where: {
@@ -142,8 +142,8 @@ app.delete("/employees/:id", async (req, res) => {
 
     console.log(response);
     if (response === 0)
-      return res.status(404).json({ msg: "Employee not found" });
-    else return res.status(200).json({ msg: "Employee Deleted" });
+      return res.status(404).json({ msg: 'Employee not found' });
+    else return res.status(200).json({ msg: 'Employee Deleted' });
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -152,7 +152,7 @@ app.delete("/employees/:id", async (req, res) => {
 
 // Tickets routes
 // Get all tickets
-app.get("/tickets", async (req, res) => {
+app.get('/tickets', async (req, res) => {
   try {
     const tickets = await Tickets.findAll();
 
@@ -183,7 +183,7 @@ app.get("/tickets", async (req, res) => {
 });
 
 // Get tickets by status and div
-app.get("/tickets/:employee_id/:status", async (req, res) => {
+app.get('/tickets/:employee_id/:status', async (req, res) => {
   try {
     const user = await Employees.findByPk(req.params.employee_id);
     const tickets = await Tickets.findAll({
@@ -217,7 +217,7 @@ app.get("/tickets/:employee_id/:status", async (req, res) => {
 });
 
 // Get tickets by user and status
-app.get("/tickets/:status/user/:employee_id", async (req, res) => {
+app.get('/tickets/:status/user/:employee_id', async (req, res) => {
   try {
     const tickets = await Tickets.findAll({
       where: { status: req.params.status, assigned_to: req.params.employee_id },
@@ -250,7 +250,7 @@ app.get("/tickets/:status/user/:employee_id", async (req, res) => {
 });
 
 // Get ticket by ID
-app.get("/tickets/:id", async (req, res) => {
+app.get('/tickets/:id', async (req, res) => {
   try {
     const ticket = await Tickets.findByPk(req.params.id);
 
@@ -277,13 +277,13 @@ app.get("/tickets/:id", async (req, res) => {
 
 // Create ticket
 app.post(
-  "/tickets/:employee_id",
-  uploadFile.array("file", 5),
+  '/tickets/:employee_id',
+  uploadFile.array('file', 5),
   async (req, res) => {
     try {
       const reqUser = await Employees.findByPk(req.params.employee_id);
       if (!reqUser) {
-        return res.status(404).json({ msg: "Employee not found" });
+        return res.status(404).json({ msg: 'Employee not found' });
       }
 
       req.body.request_by = reqUser.employee_id;
@@ -311,7 +311,7 @@ app.post(
 
       return res
         .status(201)
-        .json({ msg: "Ticket Created", Tickets: newTicket, Files: resp });
+        .json({ msg: 'Ticket Created', Tickets: newTicket, Files: resp });
     } catch (e) {
       console.log(e.message);
       return res.status(500).send(e.message);
@@ -320,7 +320,7 @@ app.post(
 );
 
 // Update ticket
-app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
+app.patch('/tickets/:ticket_id/:user_id', async (req, res) => {
   try {
     console.log(req.body);
     const user = await Employees.findByPk(req.params.user_id);
@@ -328,18 +328,18 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
 
     // Authorization & patch
     if (
-      (selectedTicket.status === "pending" ||
-        selectedTicket.status === "process") &&
+      (selectedTicket.status === 'pending' ||
+        selectedTicket.status === 'process') &&
       selectedTicket.assigned_to === user.employee_id
     ) {
-      if (selectedTicket.status === "pending") req.body.status = "process";
-      else req.body.status = "QC";
+      if (selectedTicket.status === 'pending') req.body.status = 'process';
+      else req.body.status = 'QC';
       const response = await Tickets.update(
         {
           ...req.body,
-          assigned_by: req.params.user_id,
-          assigned_to: req.body.employee_id,
-          assigned_date: new Date(),
+          // assigned_by: req.params.user_id,
+          // assigned_to: req.body.employee_id,
+          // assigned_date: new Date(),
         },
         {
           where: {
@@ -349,22 +349,31 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
       );
 
       console.log(response);
-      return res.status(200).json({ msg: "Ticket Updated", Tickets: response });
+      return res.status(200).json({ msg: 'Ticket Updated', Tickets: response });
     }
 
     if (
-      (user.role === "Assigner" && selectedTicket.status === "new") ||
-      (user.role === "QC" && selectedTicket.status === "QC")
+      (user.role === 'Assigner' && selectedTicket.status === 'new') ||
+      (user.role === 'QC' && selectedTicket.status === 'QC')
     ) {
-      if (user.role === "Assigner") req.body.status = "pending";
-      else if (user.role === "QC") req.body.status = "solve";
+      let newBody;
+      if (user.role === 'Assigner') {
+        newBody = {
+          status: 'pending',
+          assigned_by: req.params.user_id,
+          assigned_to: req.body.employee_id,
+          assigned_date: new Date(),
+        };
+      } else if (user.role === 'QC') {
+        newBody = {
+          status: 'solve',
+        };
+      }
 
       const response = await Tickets.update(
         {
           ...req.body,
-          assigned_by: req.params.user_id,
-          assigned_to: req.body.employee_id,
-          assigned_date: new Date(),
+          ...newBody,
         },
         {
           where: {
@@ -374,7 +383,7 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
       );
 
       console.log(response);
-      return res.status(200).json({ msg: "Ticket Updated", Tickets: response });
+      return res.status(200).json({ msg: 'Ticket Updated', Tickets: response });
     }
 
     return res.status(400).json({
@@ -387,7 +396,7 @@ app.patch("/tickets/:ticket_id/:user_id", async (req, res) => {
 });
 
 // Soft-delete ticket
-app.patch("/tickets/:id", async (req, res) => {
+app.patch('/tickets/:id', async (req, res) => {
   try {
     const payload = {
       is_deleted: true,
@@ -407,8 +416,8 @@ app.patch("/tickets/:id", async (req, res) => {
 
     console.log(response);
     if (response === 0)
-      return res.status(404).json({ msg: "Ticket not found" });
-    else return res.status(200).json({ msg: "Ticket Deleted" });
+      return res.status(404).json({ msg: 'Ticket not found' });
+    else return res.status(200).json({ msg: 'Ticket Deleted' });
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -416,7 +425,7 @@ app.patch("/tickets/:id", async (req, res) => {
 });
 
 // Delete ticket
-app.delete("/tickets/:id", async (req, res) => {
+app.delete('/tickets/:id', async (req, res) => {
   try {
     const response = await Tickets.destroy({
       where: {
@@ -432,8 +441,8 @@ app.delete("/tickets/:id", async (req, res) => {
 
     console.log(response);
     if (response === 0)
-      return res.status(404).json({ msg: "Ticket not found" });
-    else return res.status(200).json({ msg: "Ticket Deleted" });
+      return res.status(404).json({ msg: 'Ticket not found' });
+    else return res.status(200).json({ msg: 'Ticket Deleted' });
   } catch (e) {
     console.log(e.message);
     return res.status(500).send(e.message);
@@ -442,5 +451,5 @@ app.delete("/tickets/:id", async (req, res) => {
 
 // start server
 app.listen(8000, () => {
-  console.log("Running on port 8000");
+  console.log('Running on port 8000');
 });
